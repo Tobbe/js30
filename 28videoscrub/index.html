@@ -19,8 +19,15 @@
   const bar = speed.querySelector('.speed-bar');
   const video = document.querySelector('.flex');
 
-  speed.addEventListener('mousemove', function (e) {
-    const y = e.pageY - this.offsetTop;
+  function scrub (e) {
+    if (e.touches && e.touches.length !== 1) {
+      // Ignore multitouch
+      return;
+    }
+
+    e.preventDefault();
+
+    const y = (e.pageY || e.touches[0].pageY) - this.offsetTop;
     const percent = Math.round((y / this.offsetHeight) * 100);
     const min = 0.4;
     const max = 4;
@@ -29,7 +36,10 @@
     bar.style.height = height;
     bar.textContent = playbackRate.toFixed(2) + '×';
     video.playbackRate = playbackRate;
-  });
+  }
+
+  speed.addEventListener('touchmove', scrub);
+  speed.addEventListener('mousemove', scrub);
 </script>
 </body>
 </html>
